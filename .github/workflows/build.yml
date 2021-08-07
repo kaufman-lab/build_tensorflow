@@ -50,6 +50,7 @@ jobs:
         version: 4.1.0
     - name: setup bazel part 2
       run: |
+        ls /usr/bin | grep bazel #find bazel. where's bazel??
         update-alternatives --install /usr/bin/bazel bazel /usr/bin/bazel-4.1.0 50
         update-alternatives --set bazel /usr/bin/bazel-4.1.0
         bazel --version 
