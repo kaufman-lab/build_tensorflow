@@ -45,6 +45,7 @@ jobs:
 
     - name: Setup Bazel
       run: |
+        rm -f /var/lib/apt/lists/lock
         apt-get update
         apt-get install -y curl gnupg
         curl -fsSL https://bazel.build/bazel-release.pub.gpg | gpg --dearmor > bazel.gpg
@@ -85,3 +86,12 @@ jobs:
         name: my-artifact
         path: /tmp/${{ matrix.march}}
 
+  release:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+    - name: hellow world
+      run: echo "hello world"
+    
+    
+    
