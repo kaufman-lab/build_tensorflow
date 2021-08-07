@@ -45,7 +45,8 @@ jobs:
 
     - name: Setup Bazel
       run: |
-        rm -f /var/lib/apt/lists/lock
+        apt-get -s clean
+        rm -rf /var/lib/apt/lists
         apt-get update
         apt-get install -y curl gnupg
         curl -fsSL https://bazel.build/bazel-release.pub.gpg | gpg --dearmor > bazel.gpg
