@@ -80,7 +80,7 @@ jobs:
           pip install numpy
           cd /tmp/tensorflow
           ls 
-          bazel build --config=mkl --cxxopt=-D_GLIBCXX_USE_CXX11_ABI=0 --copt=-march=${{ matrix.march }} --copt=-mtune=${{ matrix.mtune }} --copt=-O3 //tensorflow/tools/pip_package:build_pip_package
+          bazel build --config=mkl --cxxopt="-D_GLIBCXX_USE_CXX11_ABI=0" --copt="-march=${{ matrix.march }}" --copt="-mtune=${{ matrix.mtune }}" --copt="-O3" //tensorflow/tools/pip_package:build_pip_package
     
     - name: make wheel
       run: |
