@@ -24,7 +24,11 @@ jobs:
         march: [skylake, skylake-avx512]
         mtune: [skylake, skylake-avx512, cascadelake]
     # Steps represent a sequence of tasks that will be executed as part of the job
+   
     steps:
+    - name: apt
+      run: apt-get update && apt-get upgrade
+      
     - name: Install GCC
       uses: egor-tensin/setup-gcc@v1
       with:
