@@ -45,6 +45,7 @@ jobs:
 
     - name: Setup Bazel
       run: |
+        apt-get update
         apt-get install -y curl gnupg
         curl -fsSL https://bazel.build/bazel-release.pub.gpg | gpg --dearmor > bazel.gpg
         mv bazel.gpg /etc/apt/trusted.gpg.d/
