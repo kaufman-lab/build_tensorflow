@@ -89,7 +89,9 @@ jobs:
 
     - name: install and test wheel
       run: | 
-        pip install --force-reinstall --user /tmp/tensorflow_wheel
+        ls /tmp/tensorflow_wheel
+        pip install --user /tmp/tensorflow_wheel
+        python -c "import tensorflow as tf;print(tf.reduce_sum(tf.random.normal([1000, 1000])))
 
     - name: test
       run: echo "bleh" >> /tmp/${{ matrix.march}}
