@@ -48,6 +48,11 @@ jobs:
       with:
         # Bazel version to install e.g. 1.2.1, 2.0.0, ...
         version: 4.1.0
+    - name: setup bazel part 2
+      run: |
+        update-alternatives --install /usr/bin/bazel bazel /usr/bin/bazel-4.1.0 50
+        update-alternatives --set bazel /usr/bin/bazel-4.1.0
+        bazel --version 
 
     - uses: actions/checkout@v2
     
