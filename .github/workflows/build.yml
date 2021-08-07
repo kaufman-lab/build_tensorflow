@@ -40,7 +40,13 @@ jobs:
       with:
         python-version: 3.8
         architecture: x64
-      
+
+    - name: Setup Bazel
+      uses: abhinavsingh/setup-bazel@v3
+      with:
+        # Bazel version to install e.g. 1.2.1, 2.0.0, ...
+        version: 4.1.0
+
     - uses: actions/checkout@v2
     
     # Runs a set of commands using the runners shell
