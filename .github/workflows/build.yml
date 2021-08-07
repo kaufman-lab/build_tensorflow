@@ -27,7 +27,7 @@ jobs:
    
     steps:
     - name: apt
-      run: apt-get update && apt-get upgrade
+      run: sudo apt-get update && sudo apt-get upgrade
       
     - name: Install GCC
       uses: egor-tensin/setup-gcc@v1
