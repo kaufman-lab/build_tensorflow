@@ -23,7 +23,7 @@ jobs:
       matrix:
         tensorflow-version: [2.5]
         march: [skylake, skylake-avx512]
-        mtune: [skylake, skylake-avx512, cascadelake, causeanerror]
+        mtune: [skylake, skylake-avx512, cascadelake]
     # Steps represent a sequence of tasks that will be executed as part of the job
    
     steps:
