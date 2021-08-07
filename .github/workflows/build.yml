@@ -32,7 +32,7 @@ jobs:
 
     - uses: actions/upload-artifact@v2
       with:
-        name: tf${{ tensorflow-version }}march_${{ matrix.march }}_mtune${{ mtune }}
+        name: tf${{ matrix.tensorflow-version }}march_${{ matrix.march }}_mtune${{ matrix.mtune }}
         path: /tmp/tensorflow.whl
 
   release:
