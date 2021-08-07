@@ -19,10 +19,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         tensorflow-version: [2.5]
         march: [skylake, skylake-avx512]
-        mtune: [skylake, skylake-avx512, cascadelake]
+        mtune: [skylake, skylake-avx512, cascadelake, causeanerror]
     # Steps represent a sequence of tasks that will be executed as part of the job
    
     steps:
@@ -79,7 +80,16 @@ jobs:
           pwd
           cd /tmp/tensorflow
           ls 
-          bazel build --config=mkl --cxxopt=-D_GLIBCXX_USE_CXX11_ABI=0 --copt=-march=${{ matrix.march }} --copt=-mtune= ${{ matrix.mtune }} --copt=-O3 //tensorflow/tools/pip_package:build_pip_package
+          bazel build --config=mkl --cxxopt=-D_GLIBCXX_USE_CXX11_ABI=0 --copt=-march=${{ matrix.march }} --copt=-mtune=${{ matrix.mtune }} --copt=-O3 //tensorflow/tools/pip_package:build_pip_package
+    
+    - name: make wheel
+      run: |
+        mkdir /tmp/tensorflow_wheel
+        bazel-bin/tensorflow/tools/pip_package/build_pip_package /tmp/tensorflow_wheel
+
+    - name: install and test wheel
+      run: | 
+        pip install --force-reinstall --user /tmp/tensorflow_wheel
 
     - name: test
       run: echo "bleh" >> /tmp/${{ matrix.march}}
