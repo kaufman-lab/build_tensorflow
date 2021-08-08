@@ -14,8 +14,6 @@ apt-get install -y python3-pip
 apt-get install -y gcc-10
 apt-get install -y g++-10
 
-ln -s /usr/bin/python3 /usr/bin/python
-
 update-alternatives --remove-all gcc
 update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 100
 update-alternatives --set gcc /usr/bin/gcc-10
@@ -28,6 +26,12 @@ update-alternatives --set g++ /usr/bin/g++-10
 update-alternatives --config g++
 g++ --version
 
+
+update-alternatives --remove-all python
+update-alternatives --install /usr/bin/python python /usr/bin/python3 100
+update-alternatives --set python /usr/bin/python3
+update-alternatives --config python
+python --version
 
 
 
