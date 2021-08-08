@@ -55,5 +55,5 @@ echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githu
 apt update
 apt install -y gh
 
-pip install numpy==1.21.1 keras_preprocessing=1.1.2
+pip install numpy==1.21.1 keras_preprocessing==1.1.2
 python -m pip freeze
