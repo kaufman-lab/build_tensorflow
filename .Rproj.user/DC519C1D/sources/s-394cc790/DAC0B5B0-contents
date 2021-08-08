@@ -6,53 +6,82 @@ name: CI
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
   push:
-    branches: [ main ]
+    branches: [ main, ICC]
   pull_request:
-    branches: [ main ]
+    branches: [ main, ICC]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+
+
+env:
+  LINUX_BASEKIT_URL: https://registrationcenter-download.intel.com/akdlm/irc_nas/17977/l_BaseKit_p_2021.3.0.3219_offline.sh
+  LINUX_HPCKIT_URL: https://registrationcenter-download.intel.com/akdlm/irc_nas/17912/l_HPCKit_p_2021.3.0.3230_offline.sh
+  LINUX_CPP_COMPONENTS: intel-oneapi-compiler-dpcpp-cpp-and-cpp-classic
+  LINUX_FORTRAN_COMPONENTS: intel-oneapi-compiler-fortran
+  LINUX_DPCPP_COMPONENTS: intel-oneapi-compiler-dpcpp-cpp
+  LINUX_CPP_COMPONENTS_WEB: intel.oneapi.lin.dpcpp-cpp-compiler-pro
+  LINUX_FORTRAN_COMPONENTS_WEB: intel.oneapi.lin.ifort-compiler
+  LINUX_DPCPP_COMPONENTS_WEB: intel.oneapi.lin.dpcpp-cpp-compiler
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
+    defaults:
+      run:
+        shell: bash
     strategy:
       fail-fast: false
       matrix:
         tensorflow-version: [2.5]
-        march: [skylake, skylake-avx512, cascadelake]
+        march: [skylake, skylake-avx512]
         mtune: [skylake, skylake-avx512, cascadelake]
     # Steps represent a sequence of tasks that will be executed as part of the job
    
     steps:
     - name: apt
-      if:  matrix.mtune != "cascadelake" || ( (matrix.mtune == "cascadelake") && ( matrix.march == "cascadelake" ) )
       run: sudo apt-get update && sudo apt-get upgrade
       
-    - name: Install GCC
-      if:  matrix.mtune != "cascadelake" || ( (matrix.mtune == "cascadelake") && ( matrix.march == "cascadelake" ) )
-      uses: egor-tensin/setup-gcc@v1
+
+      
+      # from here: 
+    - name: get intel scripts
+      run: | 
+        git clone git@github.com:oneapi-src/oneapi-ci.git
+        cd oneapi-ci
+        
+    - name: cache install for icc
+      id: cache-install
+      uses: actions/cache@v2
       with:
-        # GCC version to install
-        version: 11
-        # Target platform
-        platform: x64
-        # Install Cygwin packages
-        cygwin: 0
-        # Set up cc/c++ executables
-        cc: 1
+        path: |
+          /opt/intel/oneapi/compiler
+        key: install-${{ env.LINUX_HPCKIT_URL }}-${{ env.LINUX_CPP_COMPONENTS_WEB }}-compiler-${{ hashFiles('**/scripts/cache_exclude_linux.sh') }}
+    - name: install icc
+      if: steps.cache-install.outputs.cache-hit != 'true'
+      run: scripts/install_linux.sh $LINUX_HPCKIT_URL $LINUX_CPP_COMPONENTS_WEB
+    - name: build
+      run: scripts/build_linux.sh c++
+    - name: exclude unused files from cache
+      if: steps.cache-install.outputs.cache-hit != 'true'
+      run: scripts/cache_exclude_linux.sh
+
+    - name: find icc
+      run: |
+        ls /usr/bin | grep icc
+        ls /usr/bin | grep ipcp
+        ipcp --version
+        icc --version
 
     - name: Setup Python
-      if:  matrix.mtune != "cascadelake" || ( (matrix.mtune == "cascadelake") && ( matrix.march == "cascadelake" ) )
       uses: actions/setup-python@v2.2.2
       with:
         python-version: 3.8
         architecture: x64
 
     - name: Setup Bazel
-      if:  matrix.mtune != "cascadelake" || ( (matrix.mtune == "cascadelake") && ( matrix.march == "cascadelake" ) )
       run: |
         sudo apt-get update
         sudo apt-get install -y curl gnupg
@@ -69,7 +98,6 @@ jobs:
     
 
     - name: download tensorflow source
-      if:  matrix.mtune != "cascadelake" || ( (matrix.mtune == "cascadelake") && ( matrix.march == "cascadelake" ) )
       #https://software.intel.com/content/www/us/en/develop/articles/intel-optimization-for-tensorflow-installation-guide.html
       run: |
         cd /tmp
@@ -78,33 +106,28 @@ jobs:
         git checkout r${{ matrix.tensorflow-version }}
         
     - name: build tensorflow
-      if:  matrix.mtune != "cascadelake" || ( (matrix.mtune == "cascadelake") && ( matrix.march == "cascadelake" ) )
       #https://software.intel.com/content/www/us/en/develop/articles/intel-optimization-for-tensorflow-installation-guide.html
       run: |
           pip install numpy
           cd /tmp/tensorflow
           ls 
-          bazel build --config=mkl --cxxopt="-D_GLIBCXX_USE_CXX11_ABI=0" --copt="-march=${{ matrix.march }}" --copt="-mtune=${{ matrix.mtune }}" //tensorflow/tools/pip_package:build_pip_package
+          CC=icc bazel build --config=mkl --cxxopt="-D_GLIBCXX_USE_CXX11_ABI=0" --copt="-march=${{ matrix.march }}" --copt="-mtune=${{ matrix.mtune }}" //tensorflow/tools/pip_package:build_pip_package
     
     - name: make wheel
-      if:  matrix.mtune != "cascadelake" || ( (matrix.mtune == "cascadelake") && ( matrix.march == "cascadelake" ) )
       run: |
         mkdir /tmp/tensorflow_wheel
         bazel-bin/tensorflow/tools/pip_package/build_pip_package /tmp/tensorflow_wheel
 
     - name: install and test wheel
-      if:  matrix.mtune != "cascadelake" || ( (matrix.mtune == "cascadelake") && ( matrix.march == "cascadelake" ) )
       run: | 
         ls /tmp/tensorflow_wheel
         pip install --user /tmp/tensorflow_wheel
         python -c "import tensorflow as tf;print(tf.reduce_sum(tf.random.normal([1000, 1000])))
 
     - name: test
-      if:  matrix.mtune != "cascadelake" || ( (matrix.mtune == "cascadelake") && ( matrix.march == "cascadelake" ) )
       run: echo "bleh" >> /tmp/${{ matrix.march}}
 
     - uses: actions/upload-artifact@v2
-      if:  matrix.mtune != "cascadelake" || ( (matrix.mtune == "cascadelake") && ( matrix.march == "cascadelake" ) )
       with:
         name: my-artifact
         path: /tmp/${{ matrix.march}}
@@ -113,8 +136,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: build #this depends on successful completion of *all* matrix jobs.
     steps:
-    - name: hellow world
-      run: echo "hello world"
+    - name: test if gh is installed
+      run: gh
  
 
     - name: checkout
