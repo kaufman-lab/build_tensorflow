@@ -21,6 +21,8 @@
 #if[$march -ne 'cascadelake'] ||  ([$mtune == 'cascadelake'] && [march == 'cascadelake']); then
 
 #download tensorflow source
+mkdir -p builds
+cd builds
 git clone https://github.com/tensorflow/tensorflow tensorflow$march$mtune
 cd tensorflow$march$mtune
 git checkout r$tensorflowversion
