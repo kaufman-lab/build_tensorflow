@@ -6,18 +6,32 @@ name: CI
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
   push:
-    branches: [ main ]
+    branches: [ main, ICC]
   pull_request:
-    branches: [ main ]
+    branches: [ main, ICC]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+
+
+env:
+  LINUX_BASEKIT_URL: https://registrationcenter-download.intel.com/akdlm/irc_nas/17977/l_BaseKit_p_2021.3.0.3219_offline.sh
+  LINUX_HPCKIT_URL: https://registrationcenter-download.intel.com/akdlm/irc_nas/17912/l_HPCKit_p_2021.3.0.3230_offline.sh
+  LINUX_CPP_COMPONENTS: intel-oneapi-compiler-dpcpp-cpp-and-cpp-classic
+  LINUX_FORTRAN_COMPONENTS: intel-oneapi-compiler-fortran
+  LINUX_DPCPP_COMPONENTS: intel-oneapi-compiler-dpcpp-cpp
+  LINUX_CPP_COMPONENTS_WEB: intel.oneapi.lin.dpcpp-cpp-compiler-pro
+  LINUX_FORTRAN_COMPONENTS_WEB: intel.oneapi.lin.ifort-compiler
+  LINUX_DPCPP_COMPONENTS_WEB: intel.oneapi.lin.dpcpp-cpp-compiler
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
+    defaults:
+      run:
+        shell: bash
     strategy:
       fail-fast: false
       matrix:
@@ -30,17 +44,33 @@ jobs:
     - name: apt
       run: sudo apt-get update && sudo apt-get upgrade
       
-    - name: Install GCC
-      uses: egor-tensin/setup-gcc@v1
+    - name: checkout
+      uses: actions/checkout@v2
+      
+      # from here: 
+    - name: cache install for icc
+      id: cache-install
+      uses: actions/cache@v2
       with:
-        # GCC version to install
-        version: 11
-        # Target platform
-        platform: x64
-        # Install Cygwin packages
-        cygwin: 0
-        # Set up cc/c++ executables
-        cc: 1
+        path: |
+          /opt/intel/oneapi/compiler
+        key: install-${{ env.LINUX_HPCKIT_URL }}-${{ env.LINUX_CPP_COMPONENTS_WEB }}-compiler-${{ hashFiles('**/scripts/cache_exclude_linux.sh') }}
+    - name: install icc
+      if: steps.cache-install.outputs.cache-hit != 'true'
+      run: scripts/install_linux.sh $LINUX_HPCKIT_URL $LINUX_CPP_COMPONENTS_WEB
+    - name: build
+      run: scripts/build_linux.sh c++
+    - name: exclude unused files from cache
+      if: steps.cache-install.outputs.cache-hit != 'true'
+      run: scripts/cache_exclude_linux.sh
+
+    - name: find icc
+      run: |
+        ls /usr/bin | grep icc
+        ls /usr/bin | grep ipcp
+        icc
+        #does gcc exist?
+        gcc
 
     - name: Setup Python
       uses: actions/setup-python@v2.2.2
