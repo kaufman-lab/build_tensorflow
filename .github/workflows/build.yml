@@ -28,11 +28,11 @@ jobs:
    
     steps:
     - name: apt
-      if:  matrix.mtune != 'cascadelake' || ( (matrix.mtune == 'cascadelake') && ( matrix.march == 'cascadelake' ) )
+      if:  matrix.march != 'cascadelake' || ( (matrix.mtune == 'cascadelake') && ( matrix.march == 'cascadelake' ) )
       run: sudo apt-get update && sudo apt-get upgrade
       
     - name: Install GCC
-      if:  matrix.mtune != 'cascadelake' || ( (matrix.mtune == 'cascadelake') && ( matrix.march == 'cascadelake' ) )
+      if:  matrix.march != 'cascadelake' || ( (matrix.mtune == 'cascadelake') && ( matrix.march == 'cascadelake' ) )
       uses: egor-tensin/setup-gcc@v1
       with:
         # GCC version to install
@@ -45,14 +45,14 @@ jobs:
         cc: 1
 
     - name: Setup Python
-      if:  matrix.mtune != 'cascadelake' || ( (matrix.mtune == 'cascadelake') && ( matrix.march == 'cascadelake' ) )
+      if:  matrix.march != 'cascadelake' || ( (matrix.mtune == 'cascadelake') && ( matrix.march == 'cascadelake' ) )
       uses: actions/setup-python@v2.2.2
       with:
         python-version: 3.8
         architecture: x64
 
     - name: Setup Bazel
-      if:  matrix.mtune != 'cascadelake' || ( (matrix.mtune == 'cascadelake') && ( matrix.march == 'cascadelake' ) )
+      if:  matrix.march != 'cascadelake' || ( (matrix.mtune == 'cascadelake') && ( matrix.march == 'cascadelake' ) )
       run: |
         sudo apt-get update
         sudo apt-get install -y curl gnupg
@@ -66,7 +66,7 @@ jobs:
         bazel --version 
 
     - name: download tensorflow source
-      if:  matrix.mtune != 'cascadelake' || ( (matrix.mtune == 'cascadelake') && ( matrix.march == 'cascadelake' ) )
+      if:  matrix.march != 'cascadelake' || ( (matrix.mtune == 'cascadelake') && ( matrix.march == 'cascadelake' ) )
       #https://software.intel.com/content/www/us/en/develop/articles/intel-optimization-for-tensorflow-installation-guide.html
       run: |
         cd /tmp
@@ -75,7 +75,7 @@ jobs:
         git checkout r${{ matrix.tensorflow-version }}
         
     - name: build tensorflow
-      if:  matrix.mtune != 'cascadelake' || ( (matrix.mtune == 'cascadelake') && ( matrix.march == 'cascadelake' ) )
+      if:  matrix.march != 'cascadelake' || ( (matrix.mtune == 'cascadelake') && ( matrix.march == 'cascadelake' ) )
       #https://software.intel.com/content/www/us/en/develop/articles/intel-optimization-for-tensorflow-installation-guide.html
       run: |
           pip install numpy
@@ -84,26 +84,26 @@ jobs:
           bazel build --config=mkl --cxxopt="-D_GLIBCXX_USE_CXX11_ABI=0" --copt="-march=${{ matrix.march }}" --copt="-mtune=${{ matrix.mtune }}" --copt="-O3" //tensorflow/tools/pip_package:build_pip_package
 
     - uses: actions/upload-artifact@v2
-      if:  matrix.mtune != 'cascadelake' || ( (matrix.mtune == 'cascadelake') && ( matrix.march == 'cascadelake' ) )
+      if:  matrix.march != 'cascadelake' || ( (matrix.mtune == 'cascadelake') && ( matrix.march == 'cascadelake' ) )
       with:
         name: tf${{ matrix.tensorflow-version }}march_${{ matrix.march }}_mtune${{ matrix.mtune }}_build
         path: /tmp/tensorflow
 
     
     - name: make wheel
-      if:  matrix.mtune != 'cascadelake' || ( (matrix.mtune == 'cascadelake') && ( matrix.march == 'cascadelake' ) )
+      if:  matrix.march != 'cascadelake' || ( (matrix.mtune == 'cascadelake') && ( matrix.march == 'cascadelake' ) )
       run: |
         mkdir /tmp/tensorflow_wheel
         bazel-bin/tensorflow/tools/pip_package/build_pip_package /tmp/tensorflow_wheel
 
     - uses: actions/upload-artifact@v2
-      if:  matrix.mtune != 'cascadelake' || ( (matrix.mtune == 'cascadelake') && ( matrix.march == 'cascadelake' ) )
+      if:  matrix.march != 'cascadelake' || ( (matrix.mtune == 'cascadelake') && ( matrix.march == 'cascadelake' ) )
       with:
         name: tf${{ matrix.tensorflow-version }}march_${{ matrix.march }}_mtune${{ matrix.mtune }}_wheel
         path: /tmp/tensorflow_wheel
 
     - name: install and test wheel
-      if:  matrix.mtune != 'cascadelake' || ( (matrix.mtune == 'cascadelake') && ( matrix.march == 'cascadelake' ) )
+      if:  matrix.march != 'cascadelake' || ( (matrix.mtune == 'cascadelake') && ( matrix.march == 'cascadelake' ) )
       run: | 
         ls /tmp/tensorflow_wheel
         pip install --user /tmp/tensorflow_wheel
