@@ -23,6 +23,7 @@
 #download tensorflow source
 git clone https://github.com/tensorflow/tensorflow tensorflow$march$mtune
 cd tensorflow$march$mtune
+git checkout r$tensorflowversion
 
 bazel build --config=mkl --cxxopt="-D_GLIBCXX_USE_CXX11_ABI=0" --copt="-march=${march}" --copt="-mtune=${mtune}" --copt="-O3" //tensorflow/tools/pip_package:build_pip_package
 
