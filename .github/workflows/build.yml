@@ -44,10 +44,14 @@ jobs:
     - name: apt
       run: sudo apt-get update && sudo apt-get upgrade
       
-    - name: checkout
-      uses: actions/checkout@v2
+
       
       # from here: 
+    - name: get intel scripts
+      run: | 
+        git clone git@github.com:oneapi-src/oneapi-ci.git
+        cd oneapi-ci
+        
     - name: cache install for icc
       id: cache-install
       uses: actions/cache@v2
@@ -68,9 +72,8 @@ jobs:
       run: |
         ls /usr/bin | grep icc
         ls /usr/bin | grep ipcp
-        icc
-        #does gcc exist?
-        gcc
+        ipcp --version
+        icc --version
 
     - name: Setup Python
       uses: actions/setup-python@v2.2.2
@@ -108,7 +111,7 @@ jobs:
           pip install numpy
           cd /tmp/tensorflow
           ls 
-          CC=icpc bazel build --config=mkl --cxxopt="-D_GLIBCXX_USE_CXX11_ABI=0" --copt="-march=${{ matrix.march }}" --copt="-mtune=${{ matrix.mtune }}" //tensorflow/tools/pip_package:build_pip_package
+          CC=icc bazel build --config=mkl --cxxopt="-D_GLIBCXX_USE_CXX11_ABI=0" --copt="-march=${{ matrix.march }}" --copt="-mtune=${{ matrix.mtune }}" //tensorflow/tools/pip_package:build_pip_package
     
     - name: make wheel
       run: |
