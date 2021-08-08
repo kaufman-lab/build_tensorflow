@@ -18,6 +18,10 @@ update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 100
 update-alternatives --set gcc /usr/bin/gcc-10
 gcc --version
 
+update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-10 100
+update-alternatives --set g++ /usr/bin/g++-10
+g++ --version
+
 ## install bazel
 apt-get install -y curl gnupg
 curl -fsSL https://bazel.build/bazel-release.pub.gpg | gpg --dearmor > bazel.gpg
