@@ -65,9 +65,6 @@ jobs:
         sudo update-alternatives --set bazel /usr/bin/bazel-4.1.0
         bazel --version 
 
-    - uses: actions/checkout@v2
-    
-
     - name: download tensorflow source
       if:  matrix.mtune != 'cascadelake' || ( (matrix.mtune == 'cascadelake') && ( matrix.march == 'cascadelake' ) )
       #https://software.intel.com/content/www/us/en/develop/articles/intel-optimization-for-tensorflow-installation-guide.html
