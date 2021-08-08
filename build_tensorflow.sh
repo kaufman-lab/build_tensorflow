@@ -25,7 +25,7 @@ git clone https://github.com/tensorflow/tensorflow
 mv ./tensorflow ./tensorflow$march$mtune
 git checkout r$tensorflowversion
 
-bazel build --config=mkl --cxxopt="-D_GLIBCXX_USE_CXX11_ABI=0" --copt="-march=${{ march }}" --copt="-mtune=${{ mtune }}" --copt="-O3" //tensorflow/tools/pip_package:build_pip_package
+bazel build --config=mkl --cxxopt="-D_GLIBCXX_USE_CXX11_ABI=0" --copt="-march=${march}" --copt="-mtune=${mtune}" --copt="-O3" //tensorflow/tools/pip_package:build_pip_package
 
 #build wheel
 #bazel-bin/tensorflow/tools/pip_package/build_pip_package /tmp/tensorflow_wheel
