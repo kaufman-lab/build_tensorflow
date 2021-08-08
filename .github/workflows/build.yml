@@ -82,6 +82,13 @@ jobs:
           cd /tmp/tensorflow
           ls 
           bazel build --config=mkl --cxxopt="-D_GLIBCXX_USE_CXX11_ABI=0" --copt="-march=${{ matrix.march }}" --copt="-mtune=${{ matrix.mtune }}" //tensorflow/tools/pip_package:build_pip_package
+
+    - uses: actions/upload-artifact@v2
+      if:  matrix.mtune != 'cascadelake' || ( (matrix.mtune == 'cascadelake') && ( matrix.march == 'cascadelake' ) )
+      with:
+        name: tf${{ matrix.tensorflow-version }}march_${{ matrix.march }}_mtune${{ matrix.mtune }}_build
+        path: /tmp/tensorflow
+
     
     - name: make wheel
       if:  matrix.mtune != 'cascadelake' || ( (matrix.mtune == 'cascadelake') && ( matrix.march == 'cascadelake' ) )
@@ -89,22 +96,18 @@ jobs:
         mkdir /tmp/tensorflow_wheel
         bazel-bin/tensorflow/tools/pip_package/build_pip_package /tmp/tensorflow_wheel
 
+    - uses: actions/upload-artifact@v2
+      if:  matrix.mtune != 'cascadelake' || ( (matrix.mtune == 'cascadelake') && ( matrix.march == 'cascadelake' ) )
+      with:
+        name: tf${{ matrix.tensorflow-version }}march_${{ matrix.march }}_mtune${{ matrix.mtune }}_wheel
+        path: /tmp/tensorflow_wheel
+
     - name: install and test wheel
       if:  matrix.mtune != 'cascadelake' || ( (matrix.mtune == 'cascadelake') && ( matrix.march == 'cascadelake' ) )
       run: | 
         ls /tmp/tensorflow_wheel
         pip install --user /tmp/tensorflow_wheel
         python -c "import tensorflow as tf;print(tf.reduce_sum(tf.random.normal([1000, 1000])))
-
-    - name: test
-      if:  matrix.mtune != 'cascadelake' || ( (matrix.mtune == 'cascadelake') && ( matrix.march == 'cascadelake' ) )
-      run: echo "bleh" >> /tmp/${{ matrix.march}}
-
-    - uses: actions/upload-artifact@v2
-      if:  matrix.mtune != 'cascadelake' || ( (matrix.mtune == 'cascadelake') && ( matrix.march == 'cascadelake' ) )
-      with:
-        name: my-artifact
-        path: /tmp/${{ matrix.march}}
 
   release:
     runs-on: ubuntu-latest
