@@ -55,5 +55,11 @@ echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githu
 apt update
 apt install -y gh
 
-pip install numpy==1.21.1 keras_preprocessing==1.1.2
-python -m pip freeze
+
+cat > req.txt << EOF
+Keras-Preprocessing==1.1.2
+numpy==1.21.1
+six==1.16.0
+EOF
+
+pip install -r req.txt --no-dependencies --force-reinstall
