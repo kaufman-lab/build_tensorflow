@@ -11,9 +11,9 @@ Why go through this effort? My initial testing with intel-tensorflow-avx512 show
 This repo contains:
 
 - code to build a container that can then be used to build tensorflow (as a github action workflow)
-- package repository for that container (see right)
+- package repository for that container (see right, under packages)
 - code to build tensorflow in the container
-- releases containing tensorflow binaries (forthcoming)
+- releases containing tensorflow binaries (see right, under releases)
 
 
 Note these binaries are built with `numpy==1.21.1` and definitely will not work with numpy 1.19. Here are all three python packages used to build tensorflow: it's probably a good idea to match all three of these exactly.
