@@ -11,7 +11,7 @@ wheels_destinations <- file.path(release_dir,f0)
 file.copy(wheels, wheels_destinations,overwrite=TRUE)
 
 
-wheels_newname <- gsub("tensorflow", "tensorflow-2.5.0-cp38-cp38-linux_x86_64_",f0)
+wheels_newname <- paste0(gsub("tensorflow", "tensorflow-2.5.0-cp38-cp38-linux_x86_64_",f0),".whl")
 
 
 file.rename(wheels_destinations, file.path(release_dir, wheels_newname))
