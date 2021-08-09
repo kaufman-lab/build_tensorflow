@@ -1,5 +1,7 @@
 # tensorflow_builds
 
+Intel CPU binaries for tensorflow 2.5
+
 Build tensorflow for intel cpus (specifically skylake-avx512/cascadelake). Why not just use the pre-compiled binaries (https://pypi.org/project/intel-tensorflow-avx512/)?  They don't work with horovod (https://github.com/horovod/horovod/issues/3091). 
 
 Code is based on https://software.intel.com/content/www/us/en/develop/articles/intel-optimization-for-tensorflow-installation-guide.html
