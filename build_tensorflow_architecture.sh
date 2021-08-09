@@ -47,7 +47,7 @@ cd tensorflow$march$mtune
 
 git clone https://github.com/tensorflow/tensorflow tensorflow
 cd tensorflow
-git checkout r$tensorflowversion
+git checkout tags/$tensorflowversion
 
 
 ## build and make wheel

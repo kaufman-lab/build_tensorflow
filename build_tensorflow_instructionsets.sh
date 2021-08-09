@@ -74,6 +74,3 @@ elif [ "$opt" = "mkl_O3_only" ]; then
 else
   exit 1
 fi
-
-
-bazel build --config=mkl -c opt --copt=-mavx --copt=-mavx2 --copt=-mfma --copt=-mavx512f --copt=-mavx512pf --copt=-mavx512cd --copt=-mavx512er //tensorflow/tools/pip_package:build_pip_package
