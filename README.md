@@ -14,3 +14,11 @@ This repo contains:
 - package repository for that container (see right)
 - code to build tensorflow in the container
 - releases containing tensorflow binaries (forthcoming)
+
+
+Note these binaries are built with `numpy==1.21.1` and definitely will not work with numpy 1.19. Here are all three python packages used to build tensorflow: it's probably a good idea to match all three of these exactly.
+```
+Keras-Preprocessing==1.1.2
+numpy==1.21.1
+six==1.16.0
+```
