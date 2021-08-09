@@ -57,9 +57,10 @@ apt install -y gh
 
 
 cat > req.txt << EOF
+wheel==0.35
 Keras-Preprocessing==1.1.2
-numpy==1.21.1
-six==1.16.0
+numpy==1.19.2
+six==1.15.0
 EOF
 
 pip install -r req.txt --no-dependencies --force-reinstall
