@@ -7,7 +7,7 @@
  #export march='cascadelake'
  #export mtune='cascadelake'
  #export bazel_output_base=$(mktemp -d -t -p /scratch/builds) #this avoids using NFS on ~ which is not recommended
- #singularity exec --bind /scratch oras://ghcr.io/kaufman-lab/tensorflow_buildenvironment:v1 ./build_tensorflow.sh
+ #singularity exec --bind /scratch oras://ghcr.io/kaufman-lab/tensorflow_buildenvironment:v1 ./build_tensorflow_architecture.sh
  #note the singularity shell will try to inherit your current wd
  #singularity containers aren't writable
  #singularity containers mount your home directory by default
