@@ -6,7 +6,8 @@
 
 getwd() #designed to be run in project root
 f0 <- setdiff(list.files("builds"), c("release"))
-build_tag <- paste0(1L:length(f0), gsub("tensorflow","", f0))
+build_tag <- paste0(1L:length(f0), gsub("tensorflow","", f0)) 
+build_tag <- gsub("-", "",build_tag) #tensorflow wheel names: dashes are reserved
 
 f <- file.path(getwd(),"builds", f0)
 
