@@ -8,7 +8,9 @@ Code is based on https://software.intel.com/content/www/us/en/develop/articles/i
 
 Why go through this effort? My initial testing with intel-tensorflow-avx512 showed it was twice as fast as vanilla tensorflow (on a single node not using horovod).
 
-- code to build a container that can then be used to build tensorflow
+This repo contains:
+
+- code to build a container that can then be used to build tensorflow (as a github action workflow)
 - package repository for that container (see right)
 - code to build tensorflow in the container
 - releases containing tensorflow binaries (forthcoming)
