@@ -51,26 +51,28 @@ git checkout tags/$tensorflowversion
 
 ## build and make wheel
 #mavx is always on, consistent with the official tensorflow builds:
+
+#i think -c opt means O2 is always on, presumbaly unless O3 is specified. https://stackoverflow.com/questions/50413978/what-is-the-difference-between-c-opt-and-copt-o3-in-bazel-build-or-gcc
  #"Note: Starting with TensorFlow 1.6, binaries use AVX instructions which may not run on older CPUs."
  #https://software.intel.com/content/www/us/en/develop/articles/intel-optimization-for-tensorflow-installation-guide.html
  
 if [ "$opt" = "mkl_only" ]; then     
-    bazel --output_base $bazel_output_base build --config=mkl -c opt --copt=-mavx --copt=-mno-avx2 --copt=-mno-fma --copt=-mno-avx512f   \
+    bazel --output_base $bazel_output_base build --config=mkl --cxxopt="-D_GLIBCXX_USE_CXX11_ABI=0" -c opt --copt=-mavx --copt=-mno-avx2 --copt=-mno-fma --copt=-mno-avx512f   \
     //tensorflow/tools/pip_package:build_pip_package && bazel-bin/tensorflow/tools/pip_package/build_pip_package ../
 elif [ "$opt" = "nothing" ]; then
-    bazel --output_base $bazel_output_base build -c opt --copt=-mavx --copt=-mno-avx2 --copt=-mno-fma --copt=-mno-avx512f  \
+    bazel --output_base $bazel_output_base build --cxxopt="-D_GLIBCXX_USE_CXX11_ABI=0" -c opt --copt=-mavx --copt=-mno-avx2 --copt=-mno-fma --copt=-mno-avx512f  \
     //tensorflow/tools/pip_package:build_pip_package && bazel-bin/tensorflow/tools/pip_package/build_pip_package ../
 elif [ "$opt" = "O3_only" ]; then
-    bazel --output_base $bazel_output_base build -c opt --copt=-mavx --copt=-mno-avx2 --copt=-mno-fma --copt=-mno-avx512f --copt="-O3" \
+    bazel --output_base $bazel_output_base build --cxxopt="-D_GLIBCXX_USE_CXX11_ABI=0" -c opt --copt=-mavx --copt=-mno-avx2 --copt=-mno-fma --copt=-mno-avx512f --copt="-O3" \
     //tensorflow/tools/pip_package:build_pip_package && bazel-bin/tensorflow/tools/pip_package/build_pip_package ../
 elif [ "$opt" = "AVX2_only" ]; then
-    bazel --output_base $bazel_output_base build -c opt --copt=-mavx --copt=-mavx2 --copt=-mfma --copt=-mno-avx512f  \
+    bazel --output_base $bazel_output_base build --cxxopt="-D_GLIBCXX_USE_CXX11_ABI=0" -c opt --copt=-mavx --copt=-mavx2 --copt=-mfma --copt=-mno-avx512f  \
     //tensorflow/tools/pip_package:build_pip_package && bazel-bin/tensorflow/tools/pip_package/build_pip_package ../  
 elif [ "$opt" = "mkl_AVX2_only" ]; then
-    bazel --output_base $bazel_output_base build --config=mkl -c opt --copt=-mavx --copt=-mavx2 --copt=-mfma --copt=-mno-avx512f  \
+    bazel --output_base $bazel_output_base build --config=mkl --cxxopt="-D_GLIBCXX_USE_CXX11_ABI=0" -c opt --copt=-mavx --copt=-mavx2 --copt=-mfma --copt=-mno-avx512f  \
     //tensorflow/tools/pip_package:build_pip_package && bazel-bin/tensorflow/tools/pip_package/build_pip_package ../ 
 elif [ "$opt" = "mkl_O3_only" ]; then
-    bazel --output_base $bazel_output_base build --config=mkl -c opt --copt=-mavx --copt=-mno-avx2 --copt=-mno-fma --copt=-mno-avx512f --copt="-O3" \
+    bazel --output_base $bazel_output_base build --config=mkl --cxxopt="-D_GLIBCXX_USE_CXX11_ABI=0" -c opt --copt=-mavx --copt=-mno-avx2 --copt=-mno-fma --copt=-mno-avx512f --copt="-O3" \
     //tensorflow/tools/pip_package:build_pip_package && bazel-bin/tensorflow/tools/pip_package/build_pip_package ../ 
 else
   exit 1
