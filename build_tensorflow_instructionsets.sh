@@ -6,6 +6,7 @@
  #export tensorflowversion=v2.5.0 #must be a valid tag
  #export opt='mkl_only'
  #export bazel_output_base=$(mktemp -d -t -p /scratch/builds) #this avoids using NFS on ~ which is not recommended
+ #export bazel_output
  #singularity exec --bind /scratch oras://ghcr.io/kaufman-lab/tensorflow_buildenvironment:v1 ./build_tensorflow_instructionsets.sh
  #note the singularity shell will try to inherit your current wd
  #singularity containers aren't writable
@@ -54,22 +55,22 @@ git checkout tags/$tensorflowversion
  #https://software.intel.com/content/www/us/en/develop/articles/intel-optimization-for-tensorflow-installation-guide.html
  
 if [ "$opt" = "mkl_only" ]; then     
-    bazel build --config=mkl -c opt --copt=-mavx --copt=-mno-avx2 --copt=-mno-fma --copt=-mno-avx512f   \
+    bazel --output_base $bazel_output_base build --config=mkl -c opt --copt=-mavx --copt=-mno-avx2 --copt=-mno-fma --copt=-mno-avx512f   \
     //tensorflow/tools/pip_package:build_pip_package && bazel-bin/tensorflow/tools/pip_package/build_pip_package ../
 elif [ "$opt" = "nothing" ]; then
-    bazel build -c opt --copt=-mavx --copt=-mno-avx2 --copt=-mno-fma --copt=-mno-avx512f  \
+    bazel --output_base $bazel_output_base build -c opt --copt=-mavx --copt=-mno-avx2 --copt=-mno-fma --copt=-mno-avx512f  \
     //tensorflow/tools/pip_package:build_pip_package && bazel-bin/tensorflow/tools/pip_package/build_pip_package ../
 elif [ "$opt" = "O3_only" ]; then
-    bazel build -c opt --copt=-mavx --copt=-mno-avx2 --copt=-mno-fma --copt=-mno-avx512f --copt="-O3" \
+    bazel --output_base $bazel_output_base build -c opt --copt=-mavx --copt=-mno-avx2 --copt=-mno-fma --copt=-mno-avx512f --copt="-O3" \
     //tensorflow/tools/pip_package:build_pip_package && bazel-bin/tensorflow/tools/pip_package/build_pip_package ../
 elif [ "$opt" = "AVX2_only" ]; then
-    bazel build -c opt --copt=-mavx --copt=-mavx2 --copt=-mfma --copt=-mno-avx512f  \
+    bazel --output_base $bazel_output_base build -c opt --copt=-mavx --copt=-mavx2 --copt=-mfma --copt=-mno-avx512f  \
     //tensorflow/tools/pip_package:build_pip_package && bazel-bin/tensorflow/tools/pip_package/build_pip_package ../  
 elif [ "$opt" = "mkl_AVX2_only" ]; then
-    bazel build --config=mkl -c opt --copt=-mavx --copt=-mavx2 --copt=-mfma --copt=-mno-avx512f  \
+    bazel --output_base $bazel_output_base build --config=mkl -c opt --copt=-mavx --copt=-mavx2 --copt=-mfma --copt=-mno-avx512f  \
     //tensorflow/tools/pip_package:build_pip_package && bazel-bin/tensorflow/tools/pip_package/build_pip_package ../ 
 elif [ "$opt" = "mkl_O3_only" ]; then
-    bazel build --config=mkl -c opt --copt=-mavx --copt=-mno-avx2 --copt=-mno-fma --copt=-mno-avx512f --copt="-O3" \
+    bazel --output_base $bazel_output_base build --config=mkl -c opt --copt=-mavx --copt=-mno-avx2 --copt=-mno-fma --copt=-mno-avx512f --copt="-O3" \
     //tensorflow/tools/pip_package:build_pip_package && bazel-bin/tensorflow/tools/pip_package/build_pip_package ../ 
 else
   exit 1
