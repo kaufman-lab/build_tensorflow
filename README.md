@@ -16,9 +16,10 @@ This repo contains:
 - releases containing tensorflow binaries (see right, under releases)
 
 
-Note these binaries are built with `numpy==1.21.1` and definitely will not work with numpy 1.19. Here are all three python packages used to build tensorflow: it's probably a good idea to match all three of these exactly.
+Here are all three python packages used to build tensorflow: it's probably a good idea to match all three of these exactly.
 ```
+wheel==0.35
 Keras-Preprocessing==1.1.2
-numpy==1.21.1
-six==1.16.0
+numpy==1.19.2
+six==1.15.0
 ```

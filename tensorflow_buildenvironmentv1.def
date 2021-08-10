@@ -61,6 +61,11 @@ wheel==0.35
 Keras-Preprocessing==1.1.2
 numpy==1.19.2
 six==1.15.0
-EOF 
+EOF
 
 pip install -r req.txt --no-dependencies --force-reinstall
+
+mkdir /userbase_nonwritable
+%environment
+#intentionally set python user installation to somewhere not writable. this prevents system packages from polluting build:
+export PYTHONUSERBASE="/userbase_nonwritable" 
